@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="Description" content="Enter your description here"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- <link rel="stylesheet" href="assets/css/style.css"> -->
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="./js/main.js" defer></script>
+    <script src="./js/key.js"></script>
+    <!-- <script src="./js/test.js"></script> -->
+
+    <title>Weather</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark py-2">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-1 fw-bold">WEATHER THIS</a>
+
+            <!-- NAV FORM for quick seatching by city only: -->
+            <form class="d-flex" action="" id="navForm">
+                <input class="form-control me-2" type="search" placeholder="Quick Search by City..." aria-label="Search" id="navCityInput">
+                <button class="btn btn-outline-warning me-2" type="submit">Search</button>
+                <a class="btn btn-outline-light" href="./advancedsearch.html">Advanced&nbsp;Search</a>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="resultInfo">
+            <!-- This is where the JS will make new cards for the weather info -> main weather desc, current temp, high, low, feels like, humidity, wind -->
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
+</body>
+</html>
