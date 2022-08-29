@@ -67,6 +67,7 @@ console.log(apiKey);
     function buildAdvancedSearchCard(){
         document.getElementById('weatherData').innerHTML = ''
         document.getElementById('defaultForm').innerHTML = ''
+        document.getElementById('defaultForm').style = ''
         // buildQuickSearch('nav')
 
         let cityInp = document.createElement('input')
@@ -152,9 +153,15 @@ console.log(apiKey);
             console.log(`SUBMITTED: city=${cityInput}`);
             
             let weatherData = await getWeatherData(cityInput)
-    
+
             console.log('WEATHER INFO FROM NAV: ', weatherData);
-            buildInfoPage(weatherData)
+
+            if (weatherData['cod'] >= '400') {
+                buildErrorMessage()
+            } else {
+                console.log('building the weather data.');
+                buildInfoPage(weatherData)
+            }    
         } else {
             console.warn('Nav search is empty');
         }
@@ -190,38 +197,12 @@ console.log(apiKey);
             buildErrorMessage();
         } else {
             let weatherData = await getWeatherData(cityInput, countryInput, zipInput, latInput, lonInput)
-            cityInput.value = ''
-            countryInput.value = ''
-            zipInput.value = ''
-            latInput.value = ''
-            lonInput.value = ''
 
             console.log('WEATHER INFO FROM ADV SUBMIT: ', weatherData);
             if (weatherData['cod'] === '400') {
-                // <div class="alert alert-danger" role="alert"> A simple danger alert—check it out! </div>
-                console.warn('Data not found');
-
-                let notFoundAlert = document.createElement('div')
-                notFoundAlert.className = 'alert alert-warning alert-dismissible fade show'
-                notFoundAlert.role = 'alert'
-
-
-                let msg = document.createElement('h5')
-                msg.innerHTML = 'Sorry! We couldn\'t find anything for that location. Try again.'
-
-                // <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                let closeB = document.createElement('button')
-                closeB.type = 'button'
-                closeB.className = 'btn-close'
-
-                notFoundAlert.append(msg)
-                notFoundAlert.append(closeB)
-
-                let display = document.getElementById('msg')
-                display.innerHTML = ''
-                display.append(notFoundAlert)
-                closeB.addEventListener('click', () => {display.innerHTML = ''})
+                buildErrorMessage()
             } else {
+                console.log('building the weather data.');
                 buildInfoPage(weatherData)
             }
             
@@ -240,18 +221,28 @@ console.log(apiKey);
         // latitude and longitude at the top bc it's the most specific.
         if (lat) {
             res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`)
-
+            // https://api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=1cdb39747dbb734b204e9195629e8a2e
         } else if (city && !country){
             res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`)
 
         } else if (city && country){
             res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}&units=imperial`)
+            // https://api.openweathermap.org/data/2.5/weather?q=chicago,us&appid=1cdb39747dbb734b204e9195629e8a2e&units=imperial
             
         } else if (zip){
             res = await fetch(`http://api.openweathermap.org/geo/1.0/zip?zip=${zip},${country}&appid=${apiKey}&units=imperial`)
+            // http://api.openweathermap.org/geo/1.0/zip?zip=60631,us&appid=1cdb39747dbb734b204e9195629e8a2e&units=imperial
         }
 
         let data = await res.json()
+        
+        if (zip){
+            let zipCity = data['name']
+            let zipCountry = data['country']
+            res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${zipCity},${zipCountry}&appid=${apiKey}&units=imperial`)
+            data = await res.json()
+        }
+        
         return data
     }
 
@@ -274,10 +265,15 @@ console.log(apiKey);
         document.getElementById('advSearchCard').innerHTML = ''
         document.getElementById('weatherData').innerHTML = ''
 
-        // default, thunderstorm, drizzle, rain, snow, mist, smoke, haze, dust, fog, sand, ash, squail, tornado, clear, clouds, 
-        body.style= "background-image: url('../images/thunderstorm.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover"
-
-        // let weather = []
+        // default, thunderstorm, drizzle, rain, snow, mist, smoke, haze, dust, fog, sand, ash, squail, tornado, clear, clouds        
+        let possibleWeathers = ['clear', 'clouds', 'default', 'drizzle', 'fog', 'mist', 'rain', 'snow', 'thunderstorm', 'tornado']
+        weather = weatherData['weather'][0]['main'].toLowerCase()
+        if (possibleWeathers.includes(weather)){
+            console.log('weather in the list');
+            body.style= `background-image: url('../images/${weather}.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover`
+        } else {
+            body.style= "background-image: url('../images/default.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover"
+        }
 
         console.log('Building Info Card...');
         // main weather desc, current temp, high, low, feels like, humidity, wind
@@ -303,8 +299,12 @@ console.log(apiKey);
 //          ------------------------------------------------------
 
             let city = document.createElement('p')
-            city.innerHTML = `${weatherData['name']}`
+            city.innerHTML = `${weatherData['name']}, `
             city.style='font-size:9vh'
+
+            let country = document.createElement('span')
+            country.innerHTML = `${weatherData['sys']['country']}`
+            country.style='font-size:5vh; color:lightgray'
             
             let currentTemp = document.createElement('h1')
             currentTemp.innerHTML = `${weatherData['main']['temp']}&deg;`
@@ -343,6 +343,7 @@ console.log(apiKey);
 
 
             col1.append(city)
+            city.append(country)
             col1.append(currentTemp)
             col1.append(currWeather)
             infoDiv.append(col1)
@@ -361,15 +362,30 @@ console.log(apiKey);
     /*
         TESTING
     */
-    async function test(){
-        let testWeather = await getWeatherData('Chicago','','','','')
-        buildInfoPage(testWeather)
-    }
-    test()
+    // async function test(){
+    //     let testWeather = await getWeatherData('Chicago','','','','')
+    //     buildInfoPage(testWeather)
+    // }
+    // test()
 
 
-    function buildErrorMessage(...missing){
+    function buildErrorMessage(){
         console.log('Building Error Message...');
+        let defaultSearch = document.getElementById('defaultForm')
+        defaultSearch.innerHTML = ''
+        defaultSearch.style= ''
+
+        document.getElementById('msg').innerHTML = ''
+        document.getElementById('advSearchCard').innerHTML = ''
+        document.getElementById('weatherData').innerHTML = ''
+
+
+        let infoDiv = document.createElement('div')
+        infoDiv.className = 'text-center'
+        infoDiv.style = 'color:white; padding: 50px; margin: 9% 9%; border: 2px solid white; border-radius: 15px; background-color:rgba(0, 0, 50, 0.40); font-size: 3.5vh'
+        infoDiv.innerHTML = 'Sorry! We couldn\'t find any information for that location.<br>Please try again.'
+
+        document.getElementById('weatherData').append(infoDiv)
     }
 
     
