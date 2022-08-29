@@ -15,7 +15,7 @@
 <body id="body">
     <nav class="navbar navbar-dark py-2">
         <div class="container-fluid">
-            <a class="navbar-brand fs-1 fw-bold">WHATEVER THE WEATHER</a>
+            <a class="navbar-brand fs-1 fw-bold" href="index.html">WHATEVER THE WEATHER</a>
 
             <div id="navSearchBar">
                 <!-- NAV FORM for quick searching by city only: -->
@@ -29,18 +29,20 @@
     </nav>
 
     <div class="container">
-        <form action="" class="d-flex" id="navForm" style="margin: 15vh 10vh">
-            <input type="text" class="form-control me-2 mt-4 p-4 fs-4" placeholder="Quick Search by City..." id="navCityInput">
+        <form action="" class="d-flex" id="defaultForm" style="margin: 15vh 10vh">
+            <input type="text" class="form-control me-2 mt-4 p-4 fs-4" placeholder="Quick Search by City..." id="defaultCityInput">
             <button class="btn btn-outline-warning me-2 mt-4 p-4 fs-4" id="quickSubmit" type="submit">Search</button>
             <button class="btn btn-outline-light mt-4 fs-5" type="button" id="advButton">Advanced&nbsp;Search</button>
         </form>
 
-        <div id="msg"></div>
+        <div id="msg">
+            <!-- JS: this is where error messages will pop up if user enters wrong stuff. and if i get to it. -->
+        </div>
         <div id="advSearchCard">
-            <!-- JS creates advanced search card -->
+            <!-- JS: create advanced search card -->
         </div>
         <div id="weatherData">
-            <!-- This is where the JS will make new cards for the weather info -> main weather desc, current temp, high, low, feels like, humidity, wind -->
+            <!-- JS: make new card for the weather info -> main weather desc, current temp, high, low, feels like, humidity, wind -->
             
         </div>
     </div>

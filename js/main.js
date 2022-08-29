@@ -3,7 +3,43 @@ console.log(apiKey);
 {
     // default background image
     let body = document.getElementById('body')
-    body.style= "background-image: url('../images/sunset.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover"
+    body.style= "background-image: url('../images/default.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover"
+
+    //////////////////////////////
+    // BUILD QUICK SEARCH FIELD //
+    //////////////////////////////
+    function buildNavQuickSearch(){
+        console.log('Building quick search');
+        let form = document.createElement('form')
+        form.className = 'd-flex'
+        form.action = ''
+        form.id = 'quickForm'
+
+        let input = document.createElement('input')
+        input.placeholder = 'Quick Search By City...'
+        input.id = 'navCityInput'
+        
+        let submit = document.createElement('button')
+        submit.id = 'quickSubmitNav'
+        submit.type = 'submit'
+        submit.innerHTML = 'Search'
+        
+        let advButtonNav = document.createElement('button')
+        advButtonNav.id = 'advButtonNav'
+        advButtonNav.type = 'button'
+        advButtonNav.innerHTML = 'Advanced&nbsp;Search'
+        
+    
+        input.className = 'form-control me-2 mt-2 px-3 py-2 fs-5'
+        submit.className = 'btn btn-outline-warning me-2 mt-2 px-3 py-2 fs-5'
+        advButtonNav.className = 'btn btn-outline-light me-2 mt-2 px-3 py-2 fs-5'
+        form.append(input)
+        form.append(submit)
+        form.append(advButtonNav)
+        document.getElementById('navSearchBar').append(form)
+        document.getElementById('advButtonNav').addEventListener('click', buildAdvancedSearchCard)
+        document.getElementById('quickForm').addEventListener('submit', handleQuickSubmit)
+    }
 
 
     ////////////////////////////////
@@ -29,7 +65,8 @@ console.log(apiKey);
     //     </div>
     // </div>
     function buildAdvancedSearchCard(){
-        document.getElementById('advSearchCard').innerHTML = ''
+        document.getElementById('weatherData').innerHTML = ''
+        document.getElementById('defaultForm').innerHTML = ''
         // buildQuickSearch('nav')
 
         let cityInp = document.createElement('input')
@@ -89,7 +126,8 @@ console.log(apiKey);
         col8.append(submitButton)
         formGroup.append(col8)
         form.append(formGroup)
-        document.getElementById('advSearchCard').append(form)
+        document.getElementById('weatherData').append(form)
+        document.getElementById('advancedForm').addEventListener('submit', handleAdvSubmit)
     }
 
 
@@ -98,12 +136,22 @@ console.log(apiKey);
         console.log('Handling QUICK Submit...');
         e.preventDefault()
 
-        let cityInput = e.target.navCityInput.value;
+        let cityInput;
+
+        try{
+            console.log('TRY defaultCityInput')
+            cityInput = e.target.defaultCityInput.value;
+        } catch {}
+
+        try {
+            console.log('CATCH navCityInput')
+            cityInput = e.target.navCityInput.value;
+        } catch {}
+
         if (cityInput){
             console.log(`SUBMITTED: city=${cityInput}`);
             
             let weatherData = await getWeatherData(cityInput)
-            // e.target.cityInput = ''
     
             console.log('WEATHER INFO FROM NAV: ', weatherData);
             buildInfoPage(weatherData)
@@ -142,11 +190,11 @@ console.log(apiKey);
             buildErrorMessage();
         } else {
             let weatherData = await getWeatherData(cityInput, countryInput, zipInput, latInput, lonInput)
-            // cityInput.value = ''
-            // countryInput.value = ''
-            // zipInput.value = ''
-            // latInput.value = ''
-            // lonInput.value = ''
+            cityInput.value = ''
+            countryInput.value = ''
+            zipInput.value = ''
+            latInput.value = ''
+            lonInput.value = ''
 
             console.log('WEATHER INFO FROM ADV SUBMIT: ', weatherData);
             if (weatherData['cod'] === '400') {
@@ -207,11 +255,6 @@ console.log(apiKey);
         return data
     }
 
-    
-    function buildNavQuickSearch(){
-
-    }
-
 
 
     ////////////////////////////////
@@ -219,10 +262,24 @@ console.log(apiKey);
     ////////////////////////////////
 
     function buildInfoPage(weatherData){
-        let navSearch = document.getElementById('navForm')
-        navSearch.innerHTML = ''
-        navSearch.style= ''
-        console.log('Building Info Cards...');
+        document.getElementById('navSearchBar').innerHTML = ''
+        buildNavQuickSearch()
+
+        // clear out NAV SEARCH BAR DEFAULT FORM and MSG and ADVANCED SEARCH CARD and any other WEATHER DATA. It's new weather time.
+        let defaultSearch = document.getElementById('defaultForm')
+        defaultSearch.innerHTML = ''
+        defaultSearch.style= ''
+
+        document.getElementById('msg').innerHTML = ''
+        document.getElementById('advSearchCard').innerHTML = ''
+        document.getElementById('weatherData').innerHTML = ''
+
+        // default, thunderstorm, drizzle, rain, snow, mist, smoke, haze, dust, fog, sand, ash, squail, tornado, clear, clouds, 
+        body.style= "background-image: url('../images/thunderstorm.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover"
+
+        // let weather = []
+
+        console.log('Building Info Card...');
         // main weather desc, current temp, high, low, feels like, humidity, wind
         // console.log('City:', weatherData['name']);
         // console.log('Current Temp:', weatherData['main']['temp']);
@@ -253,9 +310,9 @@ console.log(apiKey);
             currentTemp.innerHTML = `${weatherData['main']['temp']}&deg;`
             currentTemp.style='font-size:15vh'
             
-            let feelsLike = document.createElement('p')
-            feelsLike.innerHTML = `Feels like ${weatherData['main']['feels_like']}&deg;`
-            feelsLike.style='font-size:4vh'
+            let currWeather = document.createElement('p')
+            currWeather.innerHTML = `${weatherData['weather'][0]['main']}`
+            currWeather.style='font-size:6vh'
 
 
 //          ----- COLUMN 2: weather, high, low, humidity, wind ---
@@ -264,9 +321,9 @@ console.log(apiKey);
             col2.style='padding: 0 0 0 5%'                
 //          ------------------------------------------------------
 
-            let currWeather = document.createElement('p')
-            currWeather.innerHTML = `${weatherData['weather'][0]['main']}`
-            currWeather.style='font-size:9vh'
+            let feelsLike = document.createElement('p')
+            feelsLike.innerHTML = `Feels like ${weatherData['main']['feels_like']}&deg;`
+            feelsLike.style='font-size:6vh; margin: 0 0 5vh 0;'
 
             let highTemp = document.createElement('p')
             highTemp.innerHTML = `High: ${weatherData['main']['temp_max']}&deg;`
@@ -287,16 +344,16 @@ console.log(apiKey);
 
             col1.append(city)
             col1.append(currentTemp)
-            col1.append(feelsLike)
+            col1.append(currWeather)
             infoDiv.append(col1)
-
-            col2.append(currWeather)
+            
+            col2.append(feelsLike)
             col2.append(highTemp)
             col2.append(lowTemp)
             col2.append(humidity)
             col2.append(wind)
             infoDiv.append(col2)
-            document.getElementById('weatherData').append(infoDiv)
+            document.getElementById('weatherData').append(infoDiv) // spelled the .getElementById of the same element out twice for clarity
         }
         
     }
@@ -318,9 +375,5 @@ console.log(apiKey);
     
     
     document.getElementById('advButton').addEventListener('click', buildAdvancedSearchCard)
-    document.getElementById('navForm').addEventListener('submit', handleQuickSubmit)
-    try {
-        document.getElementById('advancedForm').addEventListener('submit', handleAdvSubmit)
-    } catch {}
-    
+    document.getElementById('defaultForm').addEventListener('submit', handleQuickSubmit)
 }
