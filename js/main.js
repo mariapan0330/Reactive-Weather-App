@@ -1,6 +1,11 @@
 console.log(apiKey);
 
 {
+    // default background image
+    let body = document.getElementById('body')
+    body.style= "background-image: url('../images/sunset.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover"
+
+    
     /////////////////////////////
     // BUILD SEARCH BAR IN NAV //
     /////////////////////////////
@@ -36,6 +41,7 @@ console.log(apiKey);
         
         document.getElementById('navSearchBar').append(form)
         advButton.addEventListener('click', buildAdvancedSearchCard)
+        navForm.addEventListener('submit', handleNavSubmit)
     }
 
     buildNavSearch()
@@ -124,6 +130,7 @@ console.log(apiKey);
         formGroup.append(col8)
         form.append(formGroup)
         document.getElementById('advSearchCard').append(form)
+        form.addEventListener('submit', handleAdvSubmit)
     }
 
     // which form are we submitting?
@@ -279,13 +286,4 @@ console.log(apiKey);
     function buildErrorMessage(...missing){
         console.log('Building Error Message...');
     }
-
-
-    if (navForm){
-        navForm.addEventListener('submit', handleNavSubmit)
-    }
-    if (advancedForm){
-        advancedForm.addEventListener('submit', handleAdvSubmit)
-    }
-
 }
