@@ -13,24 +13,29 @@
     <script src="./js/key.js"></script>
     <!-- <script src="./js/test.js"></script> -->
 
-    <title>Weather</title>
+    <title>Weather This</title>
 </head>
 <body>
     <nav class="navbar navbar-dark py-2">
         <div class="container-fluid">
-            <a class="navbar-brand fs-1 fw-bold">WEATHER THIS</a>
+            <a class="navbar-brand fs-1 fw-bold" href="index.html">WEATHER THIS</a>
 
-            <!-- NAV FORM for quick seatching by city only: -->
-            <form class="d-flex" action="" id="navForm">
-                <input class="form-control me-2" type="search" placeholder="Quick Search by City..." aria-label="Search" id="navCityInput">
-                <button class="btn btn-outline-warning me-2" type="submit">Search</button>
-                <a class="btn btn-outline-light" href="./advancedsearch.html">Advanced&nbsp;Search</a>
-            </form>
+            <div id="navSearchBar">
+                <!-- NAV FORM for quick searching by city only: -->
+                <!-- <form class="d-flex" id="navForm">
+                    <input class="form-control me-2" placeholder="Quick Search by City..." id="navCityInput">
+                    <button class="btn btn-outline-warning me-2" type="submit">Search</button>
+                    <a class="btn btn-outline-light" href="./advancedsearch.html">Advanced&nbsp;Search</a>
+                </form> -->
+            </div>
         </div>
     </nav>
 
     <div class="container">
-        <div id="resultInfo">
+        <div id="advSearchCard">
+            <!-- JS creates advanced search card -->
+        </div>
+        <div id="weatherData">
             <!-- This is where the JS will make new cards for the weather info -> main weather desc, current temp, high, low, feels like, humidity, wind -->
         </div>
     </div>
@@ -39,3 +44,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+<!-- 
+<form action="" id="advancedForm" style="margin: 10vh 20vw">
+    <div class="form-group row justify-content-center">
+        <div class="col-8">
+            <input class="form-control mt-4 p-3 fs-5" name="season" type="text" placeholder="City" id="cityInput">
+            <input class="form-control mt-4 p-3 fs-5" name="round" type="text" placeholder="Country" id="countryInput">
+            <input class="form-control mt-4 p-3 fs-5" name="round" type="text" placeholder="Zip Code" id="zipInput">
+            <input class="form-control mt-4 p-3 fs-5" name="round" type="text" placeholder="Latitude" id="latInput">
+            <input class="form-control mt-4 p-3 fs-5" name="round" type="text" placeholder="Longitude" id="lonInput">
+            <button type="submit" class="w-100 btn btn-dark mt-4 p-3 fs-5">Submit</button>
+        </div>
+    </div>
+</form> -->
