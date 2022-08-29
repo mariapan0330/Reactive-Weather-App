@@ -5,47 +5,6 @@ console.log(apiKey);
     let body = document.getElementById('body')
     body.style= "background-image: url('../images/sunset.jpg'); background-repeat: no-repeat; background-attachment: fixed; background-size: cover"
 
-    
-    /////////////////////////////
-    // BUILD SEARCH BAR IN NAV //
-    /////////////////////////////
-
-    // <form class="d-flex" id="navForm">
-    //     <input class="form-control me-2" placeholder="Quick Search by City..." id="navCityInput">
-    //     <button class="btn btn-outline-warning me-2" type="submit">Search</button>
-    //     <a class="btn btn-outline-light" href="./advancedsearch.html">Advanced&nbsp;Search</a>
-    // </form>
-    function buildNavSearch(){
-        let form = document.createElement('form')
-        form.className = 'd-flex'
-        form.id = 'navForm'
-        
-        let input = document.createElement('input')
-        input.className = 'form-control me-2'
-        input.placeholder = 'Quick Search By City'
-        input.id = 'navCityInput'
-        
-        let submit = document.createElement('button')
-        submit.className = 'btn btn-outline-warning me-2'
-        submit.type = 'submit'
-        submit.innerHTML = 'Search'
-
-        let advButton = document.createElement('button')
-        advButton.type = 'button'
-        advButton.innerHTML = 'Advanced&nbsp;Search'
-        advButton.className = 'btn btn-outline-light'
-        
-        form.append(input)
-        form.append(submit)
-        form.append(advButton)
-        
-        document.getElementById('navSearchBar').append(form)
-        advButton.addEventListener('click', buildAdvancedSearchCard)
-        navForm.addEventListener('submit', handleNavSubmit)
-    }
-
-    buildNavSearch()
-
 
     ////////////////////////////////
     // BUILD ADVANCED SEARCH CARD //
@@ -70,7 +29,8 @@ console.log(apiKey);
     //     </div>
     // </div>
     function buildAdvancedSearchCard(){
-        document.getElementById('navSearchBar').innerHTML = ''
+        document.getElementById('advSearchCard').innerHTML = ''
+        // buildQuickSearch('nav')
 
         let cityInp = document.createElement('input')
         cityInp.className = 'form-control mt-4 p-3 fs-5'
@@ -130,16 +90,12 @@ console.log(apiKey);
         formGroup.append(col8)
         form.append(formGroup)
         document.getElementById('advSearchCard').append(form)
-        form.addEventListener('submit', handleAdvSubmit)
     }
 
-    // which form are we submitting?
-    let navForm = document.getElementById('navForm')
-    let advancedForm = document.getElementById('advancedForm')
 
-    // handle submit from nav form
-    async function handleNavSubmit(e){
-        console.log('Handling NAV Submission...');
+    // handle submit from quick form
+    async function handleQuickSubmit(e){
+        console.log('Handling QUICK Submit...');
         e.preventDefault()
 
         let cityInput = e.target.navCityInput.value;
@@ -147,7 +103,7 @@ console.log(apiKey);
             console.log(`SUBMITTED: city=${cityInput}`);
             
             let weatherData = await getWeatherData(cityInput)
-            e.target.cityInput = ''
+            // e.target.cityInput = ''
     
             console.log('WEATHER INFO FROM NAV: ', weatherData);
             buildInfoPage(weatherData)
@@ -186,44 +142,37 @@ console.log(apiKey);
             buildErrorMessage();
         } else {
             let weatherData = await getWeatherData(cityInput, countryInput, zipInput, latInput, lonInput)
-            cityInput.value = ''
-            countryInput.value = ''
-            zipInput.value = ''
-            latInput.value = ''
-            lonInput.value = ''
+            // cityInput.value = ''
+            // countryInput.value = ''
+            // zipInput.value = ''
+            // latInput.value = ''
+            // lonInput.value = ''
 
             console.log('WEATHER INFO FROM ADV SUBMIT: ', weatherData);
             if (weatherData['cod'] === '400') {
+                // <div class="alert alert-danger" role="alert"> A simple danger alert—check it out! </div>
                 console.warn('Data not found');
-                
-                let cardPos = document.createElement('div')
-                cardPos.className = 'd-flex justify-content-center'
 
-                // make a card with Data Not Found
-                let card = document.createElement('div')
-                card.className = 'card text-white bg-danger mb-3'
-                card.style = 'max-width: 18rem;'
+                let notFoundAlert = document.createElement('div')
+                notFoundAlert.className = 'alert alert-warning alert-dismissible fade show'
+                notFoundAlert.role = 'alert'
 
-                let cardBody = document.createElement('div')
-                cardBody.className = 'card-body'
-                
-                let cardTitle = document.createElement('div')
-                cardTitle.className = 'card-title'
-                cardTitle.innerHTML = '400'
 
-                let cardText = document.createElement('p')
-                cardText.className = 'card-text'
-                cardText.innerHTML = 'Sorry! We couldn\'t find anything for that location. Try again.'
-                
-                cardBody.append(cardTitle)
-                cardBody.append(cardText)
-                card.append(cardBody)
-                cardPos.append(card)
+                let msg = document.createElement('h5')
+                msg.innerHTML = 'Sorry! We couldn\'t find anything for that location. Try again.'
 
-                let display = document.getElementById('weatherData')
+                // <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                let closeB = document.createElement('button')
+                closeB.type = 'button'
+                closeB.className = 'btn-close'
+
+                notFoundAlert.append(msg)
+                notFoundAlert.append(closeB)
+
+                let display = document.getElementById('msg')
                 display.innerHTML = ''
-                display.append(cardPos)
-
+                display.append(notFoundAlert)
+                closeB.addEventListener('click', () => {display.innerHTML = ''})
             } else {
                 buildInfoPage(weatherData)
             }
@@ -242,16 +191,16 @@ console.log(apiKey);
         let res;
         // latitude and longitude at the top bc it's the most specific.
         if (lat) {
-            res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`)
+            res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`)
 
         } else if (city && !country){
-            res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`)
+            res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`)
 
         } else if (city && country){
-            res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}`)
+            res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}&units=imperial`)
             
         } else if (zip){
-            res = await fetch(`http://api.openweathermap.org/geo/1.0/zip?zip=${zip},${country}&appid=${apiKey}`)
+            res = await fetch(`http://api.openweathermap.org/geo/1.0/zip?zip=${zip},${country}&appid=${apiKey}&units=imperial`)
         }
 
         let data = await res.json()
@@ -259,31 +208,119 @@ console.log(apiKey);
     }
 
     
+    function buildNavQuickSearch(){
+
+    }
+
+
 
     ////////////////////////////////
     // BUILD INFORMATION FROM API //
     ////////////////////////////////
 
     function buildInfoPage(weatherData){
+        let navSearch = document.getElementById('navForm')
+        navSearch.innerHTML = ''
+        navSearch.style= ''
         console.log('Building Info Cards...');
         // main weather desc, current temp, high, low, feels like, humidity, wind
-        console.log('City:', weatherData['name']);
-        console.log('Weather:', weatherData['weather'][0]['main']);
-        console.log('Current Temp:', weatherData['main']['temp']);
-        console.log('High:', weatherData['main']['temp_max']);
-        console.log('Low:', weatherData['main']['temp_min']);
-        console.log('Feels Like:', weatherData['main']['feels_like']);
-        console.log('Humidity:', weatherData['main']['humidity']);
-        console.log('Wind:', weatherData['wind']['speed']);
+        // console.log('City:', weatherData['name']);
+        // console.log('Current Temp:', weatherData['main']['temp']);
+        // console.log('Feels Like:', weatherData['main']['feels_like']);
+        // console.log('Weather:', weatherData['weather'][0]['main']);
+        // console.log('High:', weatherData['main']['temp_max']);
+        // console.log('Low:', weatherData['main']['temp_min']);
+        // console.log('Humidity:', weatherData['main']['humidity']);
+        // console.log('Wind:', weatherData['wind']['speed']);
+
+        if (weatherData['name']) {
+//          ---------- ROW ----------
+            let infoDiv = document.createElement('div')
+            infoDiv.className = 'row'
+            infoDiv.style = 'color:white; padding: 50px; margin: 9% 10%; border: 2px solid white; border-radius: 15px; background-color:rgba(0, 0, 50, 0.40)'
+
+//          ---------- COLUMN 1: City, Temp, Feels Like ----------
+            let col1 = document.createElement('div')            //
+            col1.className = 'col-6'                            //
+            col1.style=''                                       //
+//          ------------------------------------------------------
+
+            let city = document.createElement('p')
+            city.innerHTML = `${weatherData['name']}`
+            city.style='font-size:9vh'
+            
+            let currentTemp = document.createElement('h1')
+            currentTemp.innerHTML = `${weatherData['main']['temp']}&deg;`
+            currentTemp.style='font-size:15vh'
+            
+            let feelsLike = document.createElement('p')
+            feelsLike.innerHTML = `Feels like ${weatherData['main']['feels_like']}&deg;`
+            feelsLike.style='font-size:4vh'
 
 
-        if (weatherData['cod'] === 400) {
-            let 
+//          ----- COLUMN 2: weather, high, low, humidity, wind ---
+            let col2 = document.createElement('div')            //
+            col2.className = 'col-6'                            //
+            col2.style='padding: 0 0 0 5%'                
+//          ------------------------------------------------------
+
+            let currWeather = document.createElement('p')
+            currWeather.innerHTML = `${weatherData['weather'][0]['main']}`
+            currWeather.style='font-size:9vh'
+
+            let highTemp = document.createElement('p')
+            highTemp.innerHTML = `High: ${weatherData['main']['temp_max']}&deg;`
+            highTemp.style='font-size:3.5vh;'
+
+            let lowTemp = document.createElement('p')
+            lowTemp.innerHTML = `Low: ${weatherData['main']['temp_min']}&deg;`
+            lowTemp.style='font-size:3.5vh; margin: 0 0 5vh 0;'
+
+            let humidity = document.createElement('p')
+            humidity.innerHTML = `Humidity: ${weatherData['main']['humidity']}%`
+            humidity.style='font-size:3.5vh'
+
+            let wind = document.createElement('p')
+            wind.innerHTML = `Wind: ${weatherData['wind']['speed']} MPH`
+            wind.style='font-size:3.5vh'
+
+
+            col1.append(city)
+            col1.append(currentTemp)
+            col1.append(feelsLike)
+            infoDiv.append(col1)
+
+            col2.append(currWeather)
+            col2.append(highTemp)
+            col2.append(lowTemp)
+            col2.append(humidity)
+            col2.append(wind)
+            infoDiv.append(col2)
+            document.getElementById('weatherData').append(infoDiv)
         }
+        
     }
+
+    /*
+        TESTING
+    */
+    async function test(){
+        let testWeather = await getWeatherData('Chicago','','','','')
+        buildInfoPage(testWeather)
+    }
+    test()
 
 
     function buildErrorMessage(...missing){
         console.log('Building Error Message...');
     }
+
+    
+    
+    document.getElementById('advButton').addEventListener('click', buildAdvancedSearchCard)
+    document.getElementById('navForm').addEventListener('submit', handleQuickSubmit)
+    try {
+        document.getElementById('advancedForm').addEventListener('submit', handleAdvSubmit)
+    } catch {}
+    
 }

@@ -7,36 +7,41 @@
     <meta name="Description" content="Enter your description here"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- <link rel="stylesheet" href="assets/css/style.css"> -->
-    <link rel="stylesheet" href="./css/main.css">
     <script src="./js/main.js" defer></script>
     <script src="./js/key.js"></script>
-    <!-- <script src="./js/test.js"></script> -->
 
-    <title>Weather This</title>
+    <title>Whatever The Weather</title>
 </head>
 <body id="body">
     <nav class="navbar navbar-dark py-2">
         <div class="container-fluid">
-            <a class="navbar-brand fs-1 fw-bold" href="index.html">WEATHER THIS</a>
+            <a class="navbar-brand fs-1 fw-bold">WHATEVER THE WEATHER</a>
 
             <div id="navSearchBar">
                 <!-- NAV FORM for quick searching by city only: -->
                 <!-- <form class="d-flex" id="navForm">
                     <input class="form-control me-2" placeholder="Quick Search by City..." id="navCityInput">
                     <button class="btn btn-outline-warning me-2" type="submit">Search</button>
-                    <a class="btn btn-outline-light" href="./advancedsearch.html">Advanced&nbsp;Search</a>
+                    <a class="btn btn-outline-light" id="advButton">Advanced&nbsp;Search</a>
                 </form> -->
             </div>
         </div>
     </nav>
 
     <div class="container">
+        <form action="" class="d-flex" id="navForm" style="margin: 15vh 10vh">
+            <input type="text" class="form-control me-2 mt-4 p-4 fs-4" placeholder="Quick Search by City..." id="navCityInput">
+            <button class="btn btn-outline-warning me-2 mt-4 p-4 fs-4" id="quickSubmit" type="submit">Search</button>
+            <button class="btn btn-outline-light mt-4 fs-5" type="button" id="advButton">Advanced&nbsp;Search</button>
+        </form>
+
+        <div id="msg"></div>
         <div id="advSearchCard">
             <!-- JS creates advanced search card -->
         </div>
         <div id="weatherData">
             <!-- This is where the JS will make new cards for the weather info -> main weather desc, current temp, high, low, feels like, humidity, wind -->
+            
         </div>
     </div>
 
