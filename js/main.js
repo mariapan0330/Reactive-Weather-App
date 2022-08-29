@@ -221,17 +221,15 @@ console.log(apiKey);
         // latitude and longitude at the top bc it's the most specific.
         if (lat) {
             res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`)
-            // https://api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=1cdb39747dbb734b204e9195629e8a2e
+
         } else if (city && !country){
             res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`)
 
         } else if (city && country){
             res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}&units=imperial`)
-            // https://api.openweathermap.org/data/2.5/weather?q=chicago,us&appid=1cdb39747dbb734b204e9195629e8a2e&units=imperial
             
         } else if (zip){
             res = await fetch(`http://api.openweathermap.org/geo/1.0/zip?zip=${zip},${country}&appid=${apiKey}&units=imperial`)
-            // http://api.openweathermap.org/geo/1.0/zip?zip=60631,us&appid=1cdb39747dbb734b204e9195629e8a2e&units=imperial
         }
 
         let data = await res.json()
